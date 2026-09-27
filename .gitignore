@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.env
+mlruns/
+models/*.joblib
+models/*.json
+.DS_Store
+*.egg-info/
+dist/
+build/

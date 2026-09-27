@@ -1,0 +1,69 @@
+name: ML CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: flake8 src/ api/ tests/ --max-line-length=100
+
+      - name: Format check with black
+        run: black --check src/ api/ tests/
+
+      - name: Train model
+        run: cd src && python train.py
+
+      - name: Run all tests
+        run: pytest tests/ -v --tb=short
+
+      - name: Upload trained model as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-model
+          path: models/
+
+  build-docker:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Train model for Docker image
+        run: |
+          pip install -r requirements.txt
+          cd src && python train.py
+
+      - name: Build Docker image
+        run: docker build -t iris-mlops:latest .
+
+      - name: Smoke test Docker container
+        run: |
+          docker run -d -p 8000:8000 --name iris-api iris-mlops:latest
+          sleep 8
+          curl -f http://localhost:8000/health
+          docker stop iris-api

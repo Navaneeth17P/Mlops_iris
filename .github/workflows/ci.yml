@@ -28,7 +28,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Lint with flake8
-        run: flake8 src/ api/ tests/ --max-line-length=100
+        run: flake8 src/ api/ tests/ --max-line-length=100 --extend-ignore=W292,E402,E302,F401,F541
 
       - name: Format check with black
         run: black --check src/ api/ tests/

@@ -21,6 +21,7 @@ scaler = None
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 @app.on_event("startup")
 async def startup_event():
     global model, scaler
@@ -58,11 +59,17 @@ def health():
 @app.post("/predict", response_model=PredictionResponse)
 def predict_iris(features: IrisFeatures):
     if model is None or scaler is None:
-        raise HTTPException(status_code=503, detail="Model not loaded. Run `make train` first.")
+        raise HTTPException(
+            status_code=503, detail="Model not loaded. Run `make train` first."
+        )
 
     result = predict(
-        [features.sepal_length, features.sepal_width,
-         features.petal_length, features.petal_width],
+        [
+            features.sepal_length,
+            features.sepal_width,
+            features.petal_length,
+            features.petal_width,
+        ],
         model=model,
         scaler=scaler,
     )

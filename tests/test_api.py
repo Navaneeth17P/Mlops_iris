@@ -23,22 +23,33 @@ if model_exists:
 
     def test_predict_setosa():
         with TestClient(app) as client:
-            r = client.post("/predict", json={
-                "sepal_length": 5.1, "sepal_width": 3.5,
-                "petal_length": 1.4, "petal_width": 0.2
-            })
+            r = client.post(
+                "/predict",
+                json={
+                    "sepal_length": 5.1,
+                    "sepal_width": 3.5,
+                    "petal_length": 1.4,
+                    "petal_width": 0.2,
+                },
+            )
             assert r.status_code == 200
             assert r.json()["class_name"] == "setosa"
 
     def test_predict_virginica():
         with TestClient(app) as client:
-            r = client.post("/predict", json={
-                "sepal_length": 6.3, "sepal_width": 3.3,
-                "petal_length": 6.0, "petal_width": 2.5
-            })
+            r = client.post(
+                "/predict",
+                json={
+                    "sepal_length": 6.3,
+                    "sepal_width": 3.3,
+                    "petal_length": 6.0,
+                    "petal_width": 2.5,
+                },
+            )
             assert r.status_code == 200
             assert r.json()["class_name"] == "virginica"
 
 else:
+
     def test_skip():
         pytest.skip("Model not trained — run `make train` first")

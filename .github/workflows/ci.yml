@@ -53,10 +53,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Train model for Docker image
-        run: |
-          pip install -r requirements.txt
-          cd src && python train.py
+      - - name: Train model for Docker image
+          run: |
+            pip install --upgrade pip setuptools wheel
+            pip install -r requirements.txt
+            python src/train.py
 
       - name: Build Docker image
         run: docker build -t iris-mlops:latest .

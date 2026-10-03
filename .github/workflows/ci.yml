@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - - name: Train model for Docker image
+      - name: Train model for Docker image
           run: |
             pip install --upgrade pip setuptools wheel
             pip install -r requirements.txt

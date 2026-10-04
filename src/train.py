@@ -53,7 +53,9 @@ def train(n_estimators=100, max_depth=5, random_state=42):
         joblib.dump(model, model_path)
         save_scaler(scaler)
 
-        mlflow.sklearn.log_model(model, "model", skops_trusted_types=["sklearn.tree._tree.Tree"])
+        mlflow.sklearn.log_model(
+            model, "model", skops_trusted_types=["sklearn.tree._tree.Tree"]
+        )
         mlflow.log_artifact(model_path)
 
         metrics = {"accuracy": accuracy, "classification_report": report}

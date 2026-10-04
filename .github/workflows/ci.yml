@@ -34,7 +34,7 @@ jobs:
         run: black --check src/ api/ tests/
 
       - name: Train model
-        run: cd src && python train.py
+        run: python src/train.py
 
       - name: Run all tests
         run: pytest tests/ -v --tb=short
@@ -45,7 +45,7 @@ jobs:
           name: trained-model
           path: models/
 
-    build-docker:
+  build-docker:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'

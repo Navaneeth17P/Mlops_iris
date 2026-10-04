@@ -45,13 +45,18 @@ jobs:
           name: trained-model
           path: models/
 
-  build-docker:
+    build-docker:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
       - name: Train model for Docker image
         run: |
